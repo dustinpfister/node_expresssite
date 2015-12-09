@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>express site</title>
+<meta charset="utf-8">
+</head>
+<body>
+
+<p> nodejs express site static html page </p>
+<input id="button" type="button" value="POST">
+<script>
+
+var post = function(){
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '');
+    xhr.setRequestHeader('super-get', 'picture');
+
+    xhr.onreadystatechange = function(){
+
+        if(this.readyState === 4){
+
+            console.log(this.responseText);
+        
+        }
+
+    };
+
+    xhr.send();
+
+};
+
+document.getElementById('button').addEventListener('mousedown', function(){
+
+    post();
+
+});
+
+</script>
+</body>
+</html>
