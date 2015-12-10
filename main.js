@@ -15,8 +15,6 @@ passport.use(new Strategy(
   function(username, password, cb) {
     users.findByUsername(username, function(err, user) {
 
-      console.log('yes finding user...');
-
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
       if (user.password != password) { return cb(null, false); }
@@ -72,10 +70,10 @@ siteWide.get('*',function(req,res,next){
     }else{
 
         // stupid thing where i check headers for something to do something differant
-        if(req.get('super-get') === 'picture'){
+        if(req.get('super-get') === 'userinfo'){
 
             console.log('supper-get');
-            res.send('here is your picture');
+            res.send(req.user);
 
         }else{
 
@@ -88,6 +86,11 @@ siteWide.get('*',function(req,res,next){
 
 });
 
+
+app.get('/logout.html', function(req, res){
+    req.logout();
+    res.redirect('/login.html');
+});
 
 app.post('/login.html', 
   passport.authenticate('local', { failureRedirect: '/login.html' }),
