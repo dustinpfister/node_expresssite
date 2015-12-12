@@ -1,1 +1,21 @@
 My first attempt at making a website useing node.js
+
+install dependencies:
+
+$ npm install body-parser
+$ npm install cookie-parser
+$ npm install express
+$ npm install express-session
+$ npm install morgan
+$ npm install passport
+$ npm install passport-local
+
+// must have MongoDB installed to get mongoose working
+
+$ sudo apt-get install mogodb-server
+
+// ran into a problem getting mongoose installed on xubuntu 14.04 i386 in vertualBox 5.x, but this helped:
+
+$ sudo apt-get install libkrb5-dev
+
+$ npm install mongoose
