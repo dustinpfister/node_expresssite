@@ -33,31 +33,6 @@ passport.deserializeUser(function(id, cb) {
   });
 });
 
-/*
-passport.use(new Strategy(
-  function(username, password, cb) {
-    users.findByUsername(username, function(err, user) {
-
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
-    });
-}));
-
-passport.serializeUser(function(user, cb) {
-  cb(null, user.id);
-});
-
-passport.deserializeUser(function(id, cb) {
-  users.findById(id, function (err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
-});
-*/
-
-
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
@@ -83,7 +58,16 @@ siteWide.get('*',function(req,res,next){
         // if not at login page go there        
         if(req.url !== '/login.html'){
 
-           res.redirect('/login.html');
+           
+           if(req.url === '/signup.html'){
+
+              next()
+           
+           }else{
+
+               res.redirect('/login.html');
+           
+           }
 
         // else static serve
         }else{
@@ -93,6 +77,8 @@ siteWide.get('*',function(req,res,next){
 
     // else if the visitor is logged in...
     }else{
+
+        console.log('request from user: ' + req.user);
 
         // stupid thing where i check headers for something to do something differant
         if(req.get('super-get') === 'userinfo'){
@@ -111,7 +97,6 @@ siteWide.get('*',function(req,res,next){
 
 });
 
-
 app.get('/logout.html', function(req, res){
     req.logout();
     res.redirect('/login.html');
@@ -123,14 +108,20 @@ app.post('/login.html',
     res.redirect('/');
 });
 
+app.post('/signup.html', 
+  //passport.authenticate('local', { failureRedirect: '/signup.html' }),
+    function(req, res) {
+        
+        users.createUser( JSON.stringify(req.body) );
+
+        res.redirect('/login.html');
+    }
+);
 
 app.use(
     siteWide,
     express.static('public_html')
 );
-
-
-
 
 server = app.listen(3000, function () {
   var host = server.address().address,
