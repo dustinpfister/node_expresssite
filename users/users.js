@@ -13,9 +13,15 @@ var userSchema = new Schema({
 
 });
 
-var userRecord = mongoose.model('userrecord', userSchema);
+var userRecord = mongoose.model('userrecord', userSchema),
+userInfo = mongoose.model('userinfo',new Schema({
 
+    infoID: String, 
+    userCount: Number
 
+}));
+
+// find a user document by the given id
 exports.findById = function(id,cb){
 
     console.log('finding by id...');
@@ -40,19 +46,8 @@ exports.findById = function(id,cb){
 
 };
 
+// find a user document by the given username
 exports.findByUsername = function(username, cb){
-
-    //console.log('okay good we made it this far.');
-
-/*
-    userdata.findOne({ 'name': username }, 'name', function (err, user) {
-         if (err) return handleError(err);
-
-         console.log(user);
-
-         //console.log('%s %s is a %s.', person.name.first, person.name.last, person.occupation) // Space Ghost is a talk show host.
-     })
-*/
 
     userRecord.findOne({'name': username},'', function(err,user){
 
@@ -74,35 +69,70 @@ exports.findByUsername = function(username, cb){
 
 };
 
-/*
-var records = [
-    { id: 1, username: 'jack', password: '123', displayName: 'Jack', emails: [ { value: 'jack@example.com' } ] }
-  , { id: 2, username: 'jill', password: 'password', displayName: 'Jill', emails: [ { value: 'jill@example.com' } ] }
-];
+// create a new user with the given form JSON
+exports.createUser = function(formJSON){
 
-exports.findById = function(id, cb) {
-  process.nextTick(function() {
-    var idx = id - 1;
-    if (records[idx]) {
-      cb(null, records[idx]);
-    } else {
-      cb(new Error('User ' + id + ' does not exist'));
-    }
-  });
-}
+    var newUser = new userRecord(JSON.parse(formJSON));
 
-exports.findByUsername = function(username, cb) {
-  process.nextTick(function() {
-    for (var i = 0, len = records.length; i < len; i++) {
-      var record = records[i];
-      if (record.username === username) {
+    console.log('checking if username is taken...');
+    
+    userRecord.findOne({'name': newUser.name},'', function(err,user){
+  
+        if(user){
 
-        console.log(username + ' found!');
+            console.log('someone tryed to setup an account for a username that is taken');
 
-        return cb(null, record);
-      }
-    }
-    return cb(null, null);
-  });
-}
-*/
+        }else{
+
+            console.log('NEW USER!');
+
+            // find current user count
+            userInfo.findOne({'infoID': 'main'},'', function(err,info){
+
+
+                // we should have info
+                if(info){
+
+                   console.log('yes we have main user info:');
+                   console.log(info);
+
+                   // save new user?
+                   console.log('setting user id...');
+                   newUser.id = info.userCount;
+                   console.log(newUser);
+
+                   // update user info
+                   info.userCount += 1;
+
+                   // save data??
+                   newUser.save(function(){
+
+                      console.log('new user data saved!');
+
+                   });
+                   newUser.save(function(){
+
+                      console.log('user info updated!');
+
+                   });
+
+                // we have a problem, or we are starting over with a new database.
+                }else{
+              
+                    var newInfo = new userInfo({infoID: 'main', userCount: 1});
+                    
+                    newInfo.save(function(){
+
+                        console.log('saved new main user info record!');
+
+                    });
+
+                }
+
+            });
+
+        }
+  
+    });  
+    
+};
