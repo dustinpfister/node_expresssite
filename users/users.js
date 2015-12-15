@@ -42,6 +42,21 @@ exports.findByUsername = function(username, cb){
     });
 };
 
+exports.findProfile = function(username, done){
+
+    userRecord.findOne({'name': username},'id name displayName', function(err,user){
+
+        if(user){
+            console.log('profile found');
+            return done(null, user);
+        }else{
+            console.log('given user name not found!');
+            return done(null,null);
+        }
+    });
+
+};
+
 // create a new user with the given form JSON
 exports.createUser = function(formJSON){
     

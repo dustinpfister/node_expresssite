@@ -84,8 +84,15 @@ siteWide.get('*',function(req,res,next){
         if(req.get('super-get') === 'userinfo'){
 
             console.log('supper-get');
-            res.send(req.user);
 
+            // send back profile of user.
+            users.findProfile(req.user.name, function(err,user){
+
+               res.send(user);
+
+            });
+
+        // simple static serve
         }else{
 
             console.log('serving static get');
@@ -109,7 +116,6 @@ app.post('/login.html',
 });
 
 app.post('/signup.html', 
-  //passport.authenticate('local', { failureRedirect: '/signup.html' }),
     function(req, res) {
         
         users.createUser( JSON.stringify(req.body) );
@@ -117,6 +123,41 @@ app.post('/signup.html',
         res.redirect('/login.html');
     }
 );
+
+// the user namespace ( /user /user/ /user/username )
+app.get(/user(\/.*)?/, function(req, res){
+
+    var username;
+
+    // if visiter is logged in
+    if(req.user){
+        
+        // if username ( /user/username )
+        if(req.url.length > 6){
+
+            username = req.url.replace(/\/user\//,'');
+
+            users.findProfile(username, function(err,user){
+
+                res.send('Other profile: ' +  username + ' : '+user );
+
+            });
+
+        // if root userspace ( /user )    
+        }else{
+
+            res.send('Your profile: ' + req.user+ '<br><br>' + req.url);
+    
+        }
+
+    // if user is not logged in redirect to login.
+    }else{
+
+        res.redirect('/login.html');
+
+    }
+
+});
 
 app.use(
     siteWide,
