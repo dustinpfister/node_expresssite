@@ -1,4 +1,12 @@
-My first attempt at making a website useing node.js
+my first attempt at making a website useing node.js, useing express, passport, mongoDB, bootstrap, ejs, and jQuery just to name a few.
+
+The idea i had in mind for this project was just a simple hello world of sorts when it comes to getting a node.js project off the ground. i wanted just a simple example of a site where i can create and account, login, and maybe view public profiles of other accounts. 
+
+Becuase i do not intend to publish this project, i am not that concerned with security aspects such as SSL (Secure Sockets Layer), however i did touch base with CSP ( Content-Security-Policy ) allowing for scripts from 'self', and 'unsafe-inline' (for now anyway).
+
+i also do not have any intent for more advanced features (at least not for this project), just a plain basic generic site.
+
+The project went well, i got the basic idea i had in mind togeather in a flash, and i am now ready to start making a more interesting project based on what i learned.
 
 start by cloning it in
 

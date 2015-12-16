@@ -51,6 +51,25 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.use(express.static('views')); // must do this to get external files
 
+
+// Content-Security-Policy
+app.use(function(req,res,next){
+
+    /*    i have been running into problems with content-Security-Policy when hosting on a local network
+     *    the project seems to work fine in edge, but perhaps becuase of lax security
+     *    hopfully the problem will go away in chrome, and other effected browsers if this gets hosted 
+     *    in a top level domain.
+     */
+             
+    // trust self at least yes? I would also like inline scripts for now, might change that.
+    res.setHeader("Content-Security-Policy", "script-src 'self' 'unsafe-inline'");
+
+    //console.log('CSP: ' + res.get("Content-Security-Policy"));
+
+    return next();
+
+});
+
 // site wide get
 app.get('*', function(req,res,next){
 
@@ -82,6 +101,7 @@ app.get('*', function(req,res,next){
 
 // root namespace
 app.get('/', function(req,res){
+
 
     users.findProfile(req.user.name, function(err,user){
 
