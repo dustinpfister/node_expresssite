@@ -7,19 +7,26 @@ $ git clone https://github.com/dustinpfister/node_expresssite
 
 install dependencies:
 
-$ npm install body-parser
-$ npm install cookie-parser
 $ npm install express
 $ npm install express-session
+$ npm install body-parser
+$ npm install cookie-parser
 $ npm install morgan
+
+// using passport with local strategy for authentication
 $ npm install passport
 $ npm install passport-local
+
+// playing with ejs for views
+$ npm install ejs
+$ npm install express-ejs-layouts
 
 // must have MongoDB installed to get mongoose working
 
 $ sudo apt-get install mogodb-server
 
 // ran into a problem getting mongoose installed on xubuntu 14.04 i386 in vertualBox 5.x, but this helped:
+// now using a 64 bit native server, but installed it anyway:
 
 $ sudo apt-get install libkrb5-dev
 
@@ -27,5 +34,8 @@ $ sudo apt-get install libkrb5-dev
 
 $ sudo apt-get install build-essential
 
-// go for it.
+// get mongoose, hopfully with no errors
 $ npm install mongoose
+
+// try running the server
+$ node server.js
