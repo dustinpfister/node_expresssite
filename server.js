@@ -49,7 +49,7 @@ app.use(passport.session());
 // lets try EJS
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
-
+app.use(express.static('views')); // must do this to get external files
 
 // site wide get
 app.get('*', function(req,res,next){
@@ -125,6 +125,31 @@ app.post('/signup', function(req, res) {
 
 });
 
+// search namespace
+app.get('/search', function(req,res){
+
+    res.render('search', {});
+
+});
+app.post('/search', function(req, res) {
+        
+    console.log('search query: ');
+    console.log(req.get('search'));
+
+    var search = JSON.parse(req.get('search'));
+
+    users.findProfile(search.name, function(err, user){
+
+        console.log('sending user data:');
+        console.log(user);
+        res.send(JSON.stringify(user));
+
+    });
+
+    //res.redirect('/search');
+
+});
+
 // the user namespace ( /user /user/ /user/username )
 app.get(/user(\/.*)?/, function(req, res){
 
@@ -169,129 +194,7 @@ app.get(/user(\/.*)?/, function(req, res){
 
 });
 
-
-
-/*
-// site wide GET request
-siteWide.get('*',function(req,res,next){
-
-
-    // if visiter is not logged in redirrect to login page
-    if(req.user === undefined){
-
-        console.log('visiter is not logged in');
-
-        // if not at login page go there        
-        if(req.url !== '/login.html'){
-
-           
-           if(req.url === '/signup.html'){
-
-              next()
-           
-           }else{
-
-               res.redirect('/login.html');
-           
-           }
-
-        // else static serve
-        }else{
-
-            next();
-        }
-
-    // else if the visitor is logged in...
-    }else{
-
-        console.log('request from user: ' + req.user);
-
-        // stupid thing where i check headers for something to do something differant
-        if(req.get('super-get') === 'userinfo'){
-
-            console.log('supper-get');
-
-            // send back profile of user.
-            users.findProfile(req.user.name, function(err,user){
-
-               res.send(user);
-
-            });
-
-        // simple static serve
-        }else{
-
-            console.log('serving static get');
-            next();
-
-        }
-
-    }
-
-});
-
-app.get('/logout.html', function(req, res){
-    req.logout();
-    res.redirect('/login.html');
-});
-
-app.post('/login.html', 
-  passport.authenticate('local', { failureRedirect: '/login.html' }),
-  function(req, res) {
-    res.redirect('/');
-});
-
-app.post('/signup.html', 
-    function(req, res) {
-        
-        users.createUser( JSON.stringify(req.body) );
-
-        res.redirect('/login.html');
-    }
-);
-
-// the user namespace ( /user /user/ /user/username )
-app.get(/user(\/.*)?/, function(req, res){
-
-    var username;
-
-    // if visiter is logged in
-    if(req.user){
-        
-        // if username ( /user/username )
-        if(req.url.length > 6){
-
-            username = req.url.replace(/\/user\//,'');
-
-            users.findProfile(username, function(err,user){
-
-                res.send('Other profile: ' +  username + ' : '+user );
-
-            });
-
-        // if root userspace ( /user )    
-        }else{
-
-            res.send('Your profile: ' + req.user+ '<br><br>' + req.url);
-    
-        }
-
-    // if user is not logged in redirect to login.
-    }else{
-
-        res.redirect('/login.html');
-
-    }
-
-});
-
-app.use(
-    siteWide,
-    express.static('public_html')
-);
-
-*/
-
+// start the server
 server = app.listen(3000, function () {
   var host = server.address().address,
   port = server.address().port;

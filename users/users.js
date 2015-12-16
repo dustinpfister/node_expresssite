@@ -17,13 +17,10 @@ userInfo = mongoose.model('userinfo',new Schema({
 
 // find a user document by the given id
 exports.findById = function(id,cb){
-    console.log('finding by id...');
     userRecord.findOne({'id': id},'', function(err,user){
         if(user){
-            console.log('found user with given id!');
            return cb(null, user);
         }else{
-            console.log('no user found with given id');
             return cb(null,null);
         }
     });
@@ -33,24 +30,21 @@ exports.findById = function(id,cb){
 exports.findByUsername = function(username, cb){
     userRecord.findOne({'name': username},'', function(err,user){
         if(user){
-            console.log('username found');
             return cb(null, user);
         }else{
-            console.log('given user name not found!');
             return cb(null,null);
         }
     });
 };
 
+// find a user profile by username
 exports.findProfile = function(username, done){
 
     userRecord.findOne({'name': username},'id name displayName', function(err,user){
 
         if(user){
-            console.log('profile found');
             return done(null, user);
         }else{
-            console.log('given user name not found!');
             return done(null,null);
         }
     });
@@ -61,8 +55,7 @@ exports.findProfile = function(username, done){
 exports.createUser = function(formJSON){
     
     var newUser = new userRecord(JSON.parse(formJSON));
-    console.log('checking if username is taken...');
-
+    
     userRecord.findOne({'name': newUser.name},'', function(err,user){
     
         if(user){
